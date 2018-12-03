@@ -1,7 +1,7 @@
 swagger: '2.0'
 
 info:
-  version: "0.6.0"
+  version: "0.8.0"
   title: IronMq api v3
 
 paths:
@@ -58,7 +58,6 @@ paths:
                   type: string
         401:
           $ref: "#/responses/Unauthorized"
-
     get:
       description: |
         Peek messages on the queue
@@ -99,7 +98,46 @@ paths:
                   $ref: "#/definitions/Message"
         401:
           $ref: "#/responses/Unauthorized"
-
+    delete:
+      description: |
+        Clear messages on queue.
+      parameters:
+        -
+          in: path
+          name: queuename
+          description: Name of the queue to clear
+          required: true
+          schema:
+            type: string
+        -
+          in: query
+          name: oauth
+          description: Access token
+          required: true
+          schema:
+            type: string
+        - 
+          in: body
+          name: ClearMessages
+          description: Empty Object
+          required: true
+          schema:
+            type: object
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              messages:
+                type: object
+                properties:
+                  msg:
+                    type: string
+        404:
+          $ref: "#/responses/NotFound"
+        401:
+          $ref: "#/responses/Unauthorized"
   /queues/{queuename}/reservations:
     post:
       description: |
@@ -138,6 +176,7 @@ paths:
               
       responses:
         200:
+          name: reservationsResponse
           description: Successful response
           schema:
             type: object
@@ -165,6 +204,13 @@ paths:
           in: path
           name: messageid
           description: Id of the message to delete
+          required: true
+          schema:
+            type: string
+        -
+          in: query
+          name: oauth
+          description: Access token
           required: true
           schema:
             type: string
@@ -215,6 +261,13 @@ paths:
           schema:
             type: string
         -
+          in: query
+          name: oauth
+          description: Access token
+          required: true
+          schema:
+            type: string
+        -
           in: body
           name: ReleaseMessageRequest
           description: Object containing reservation id and delay time for release
@@ -256,9 +309,9 @@ paths:
           schema:
             type: string
         -
-          in: path
-          name: messageid
-          description: Id of the message to release
+          in: query
+          name: oauth
+          description: Access token
           required: true
           schema:
             type: string
@@ -275,11 +328,52 @@ paths:
                     type: string
                   name:
                     type: string
+                  size:
+                    type: integer
+                  total_messages:
+                    type: integer
+                  message_timeout:
+                    type: integer
+                  message_expiration:
+                    type: integer
         404:
           $ref: "#/responses/NotFound"
         401:
           $ref: "#/responses/Unauthorized"
-
+    delete:
+      description: |
+        Delete queue.
+      parameters:
+        -
+          in: path
+          name: queuename
+          description: Name of the queue to delete
+          required: true
+          schema:
+            type: string
+        -
+          in: query
+          name: oauth
+          description: Access token
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              messages:
+                type: object
+                properties:
+                  msg:
+                    type: string
+        404:
+          $ref: "#/responses/NotFound"
+        401:
+          $ref: "#/responses/Unauthorized"
+          
 responses:
   NotFound:
     description: The specified resource was not found
@@ -301,7 +395,7 @@ definitions:
     type: object
     properties:
       id:
-        type: integer
+        type: string
       body:
         type: string
       reserved_count:
