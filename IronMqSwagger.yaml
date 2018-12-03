@@ -93,7 +93,7 @@ paths:
           schema:
             type: object
             properties:
-              meassages:
+              messages:
                 type: array
                 items:
                   $ref: "#/definitions/Message"
@@ -142,7 +142,7 @@ paths:
           schema:
             type: object
             properties:
-              meassages:
+              messages:
                 type: array
                 items:
                   $ref: "#/definitions/Message"
